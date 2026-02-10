@@ -267,7 +267,7 @@ PrizeConfig (設定) ────── 参照（MVPでは1種類固定）
 
 | レイヤー | 技術 | バージョン | 選定理由 |
 |---------|------|----------|---------|
-| フレームワーク | Next.js (App Router) | 15.x | SSGでSEO/OGP対応。Vercelとの親和性 |
+| フレームワーク | Next.js (App Router) | 16.x | SSGでSEO/OGP対応。Vercelとの親和性 |
 | 言語 | TypeScript | 5.x | 型安全で個人開発の品質担保 |
 | スタイリング | Tailwind CSS | 4.x | ユーティリティファースト。レスポンシブ対応が容易 |
 | アニメーション | CSS Animations + Tailwind | - | 外部ライブラリ不要。軽量 |

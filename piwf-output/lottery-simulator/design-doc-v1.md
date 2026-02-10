@@ -79,7 +79,7 @@ lottery-simulator/
 │   └── workflows/
 │       └── ci.yml                  # GitHub Actions CI
 ├── next.config.ts
-├── tailwind.config.ts              # Tailwind CSS v4設定（CSS-first: @theme利用）
+├── postcss.config.mjs              # PostCSS設定（@tailwindcss/postcss プラグイン）
 ├── tsconfig.json
 ├── vitest.config.ts
 ├── package.json
@@ -345,7 +345,7 @@ Tailwind CSS v4はv3から設定方法が大幅に変更されている。以下
 | プラグイン | JS関数 | CSS `@plugin` |
 | コンテンツ検出 | `content: [...]` 手動指定 | 自動検出 |
 
-**対応方針**: プロジェクトセットアップ時に公式ドキュメントを確認し、v4のCSS-first設定で進める。Next.js 15 + Tailwind v4の組み合わせで既知の問題がないか、セットアップ時にWebSearchで確認すること。
+**対応方針**: プロジェクトセットアップ時に公式ドキュメントを確認し、v4のCSS-first設定で進める。Next.js 16 + Tailwind v4の組み合わせで既知の問題がないか、セットアップ時にWebSearchで確認すること。
 
 ---
 

@@ -4,7 +4,7 @@
 
 宝くじの当選確率を「10連ガチャ」のUIで体感できるWebアプリ。ゲーム内通貨「ぃえん」と毎日の資金補給サイクルにより、ノーリスクで継続的に宝くじ体験を提供するエンターテインメント。
 
-**技術スタック**: Next.js 15 (App Router) / TypeScript / Tailwind CSS v4 / Vitest / Vercel
+**技術スタック**: Next.js 16 (App Router) / TypeScript / Tailwind CSS v4 / Vitest / Vercel
 
 ## アーキテクチャ
 
@@ -71,7 +71,7 @@ npm run test:ci
 # カバレッジレポート生成
 npm run test:coverage
 
-# 統計テスト（大量試行、ローカルのみ）
+# 統計テスト（大量試行、ローカルのみ）（T-09以降で追加予定）
 npm run test:statistical
 ```
 
@@ -218,11 +218,11 @@ npm run test:statistical
 
 ### プロジェクト固有の注意点
 
-- **Next.js/Reactのセキュリティパッチ必須**: Next.js 15.5.10以降を使用すること（CVE-2025-66478: RCE脆弱性対策）
+- **Next.js/Reactのセキュリティパッチ必須**: Next.js 16以降を使用すること（15系の場合は15.5.10以降）。CVE-2025-66478（RCE脆弱性）はNext.js 16で修正済み
 - **LocalStorageはビルド時に存在しない**: `useEffect` 内でのみアクセスすること。`typeof window !== 'undefined'` ガード必須
 - **`"use client"` の付け忘れ**: useState/useEffectを使うコンポーネントには必ず宣言
 - **metadata は layout.tsx で定義**: `"use client"` な page.tsx では `export const metadata` が使えない
-- **Tailwind CSS v4 は CSS-first**: `tailwind.config.js` ではなく `globals.css` の `@theme` で設定
+- **Tailwind CSS v4 は CSS-first**: `tailwind.config.js`/`tailwind.config.ts` ではなく `globals.css` の `@theme` で設定
 - **Tailwind v4 のユーティリティ名変更**: `shadow`→`shadow-sm`、`rounded`→`rounded-sm`、`ring`→`ring-3` 等。詳細は `library-notes.md` 参照
 - **Tailwind v4 の border デフォルト色変更**: `border` は `currentColor` がデフォルト（v3は `gray-200`）。色を必ず明示指定すること
 - **確率テーブルの数値精度**: 整数の重み（本数/ユニット）で抽選し、浮動小数点誤差を回避する

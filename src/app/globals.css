@@ -38,6 +38,10 @@
   --color-prize-7th: #94A3B8;
   --color-prize-miss: #475569;
 
+  /* フォントファミリー（システムフォント） */
+  --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+
   /* 角丸 */
   --radius-sm: 6px;
   --radius-md: 8px;
