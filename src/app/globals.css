@@ -1,0 +1,52 @@
+@import "tailwindcss";
+
+@theme {
+  /* ベースカラー */
+  --color-bg-primary: #0F172A;
+  --color-bg-secondary: #1E293B;
+  --color-bg-tertiary: #334155;
+  --color-surface: #1E293B;
+
+  /* テキストカラー */
+  --color-text-primary: #F8FAFC;
+  --color-text-secondary: #94A3B8;
+  --color-text-muted: #64748B;
+
+  /* アクセントカラー */
+  --color-accent-gold: #F59E0B;
+  --color-accent-gold-light: #FCD34D;
+  --color-accent-gold-dark: #D97706;
+
+  /* セマンティックカラー */
+  --color-win: #F59E0B;
+  --color-win-jackpot: #EF4444;
+  --color-lose: #64748B;
+  --color-success: #22C55E;
+  --color-warning: #EAB308;
+  --color-error: #EF4444;
+  --color-info: #3B82F6;
+
+  /* 等級別カラー */
+  --color-prize-1st: #EF4444;
+  --color-prize-1st-adjacent: #F97316;
+  --color-prize-1st-group: #EC4899;
+  --color-prize-2nd: #A855F7;
+  --color-prize-3rd: #3B82F6;
+  --color-prize-4th: #14B8A6;
+  --color-prize-5th: #22C55E;
+  --color-prize-6th: #84CC16;
+  --color-prize-7th: #94A3B8;
+  --color-prize-miss: #475569;
+
+  /* 角丸 */
+  --radius-sm: 6px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+
+  /* 影（ダークテーマ向けに不透明度を高めに設定） */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.4);
+  --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.5);
+  --shadow-glow: 0 0 20px rgba(245, 158, 11, 0.3);
+}
