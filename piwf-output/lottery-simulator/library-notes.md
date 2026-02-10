@@ -4,17 +4,17 @@
 
 ---
 
-## 1. Next.js 15（App Router）
+## 1. Next.js 16（App Router）
 
 ### 1-1. バージョン情報
 
 | 項目 | 内容 |
 |------|------|
-| 使用バージョン | 15.x（**必ずパッチ済み最新版を使用: 15.5.10以降**） |
+| 使用バージョン | 16.x（CVE-2025-66478 修正済み） |
 | ルーティング | App Router |
 | レンダリング | SSG（Static Site Generation） |
 
-> **セキュリティ警告**: Next.js 15 + React 19のReact Server Components（Flightプロトコル）にCritical（CVSS 10.0）のRCE脆弱性（CVE-2025-66478）が発見されている。本プロダクトはクライアントサイド完結のためServer Componentsの動的データ処理は行わないが、**必ずパッチ済みバージョン（15.5.10以降）を使用すること**。
+> **セキュリティ情報**: Next.js 15のReact Server Components（Flightプロトコル）にCritical（CVSS 10.0）のRCE脆弱性（CVE-2025-66478）が発見されていたが、Next.js 16では修正済み。15系を使用する場合は15.5.10以降が必須。本プロダクトはNext.js 16を使用しているため対応済み。
 
 ### 1-2. 既知のハマりどころ
 
@@ -24,8 +24,8 @@
 | 2 | **SSGでのLocalStorage参照** | ビルド時（サーバーサイド）にLocalStorageが存在しないため、直接参照するとビルドエラー | `typeof window !== 'undefined'` ガードを入れるか、useEffect内でのみアクセスする |
 | 3 | **metadata APIとClient Component** | `export const metadata` はServer Componentでのみ使用可能。Client Componentのpage.tsxでは使えない | `layout.tsx`（Server Component）でmetadataを定義する。page.tsxは`"use client"`で分離 |
 | 4 | **Turbopack（dev時）の挙動差異** | `next dev --turbopack` はWebpackと一部挙動が異なる場合がある | 問題が出たら `next dev`（Turbopackなし）で確認。本番ビルドは常にWebpack |
-| 5 | **キャッシュ動作の変更** | Next.js 15ではfetchのデフォルトキャッシュが `no-store` に変更（14では `force-cache`） | 本プロダクトはサーバーサイドfetchを使わないため影響なし。ただし認識しておく |
-| 6 | **React 19の新機能との互換** | Next.js 15はReact 19を使用。一部のサードパーティライブラリがReact 19に未対応の可能性 | 依存ライブラリの互換性を `npm install` 時に確認 |
+| 5 | **キャッシュ動作の変更** | Next.js 15以降ではfetchのデフォルトキャッシュが `no-store` に変更（14では `force-cache`）。Next.js 16でも同様 | 本プロダクトはサーバーサイドfetchを使わないため影響なし。ただし認識しておく |
+| 6 | **React 19の新機能との互換** | Next.js 16はReact 19を使用。一部のサードパーティライブラリがReact 19に未対応の可能性 | 依存ライブラリの互換性を `npm install` 時に確認 |
 
 ### 1-3. 推奨される使い方
 
@@ -146,10 +146,10 @@
 
 | 項目 | 内容 |
 |------|------|
-| 使用バージョン | 19.x（Next.js 15にバンドル。**パッチ済み最新版を使用**） |
-| 注意点 | Next.js 15はReact 19を前提としている |
+| 使用バージョン | 19.x（Next.js 16にバンドル） |
+| 注意点 | Next.js 16はReact 19を前提としている |
 
-> **セキュリティ警告**: React 19のServer Components（Flightプロトコル）に安全でないデシリアライゼーションによるRCE脆弱性（CVE-2025-55182, CVSS 10.0）が発見され、実際に悪用が確認されている。本プロダクトはServer Componentsの動的データ処理を行わないが、Next.jsのパッチ済みバージョンを使用することで自動的に修正される。
+> **セキュリティ情報**: React 19のServer Components（Flightプロトコル）に安全でないデシリアライゼーションによるRCE脆弱性（CVE-2025-55182, CVSS 10.0）が発見されていたが、Next.js 16では修正済み。本プロダクトはNext.js 16を使用しているため対応済み。
 
 ### 4-2. 既知のハマりどころ
 
@@ -202,7 +202,7 @@
 | 方針 | 詳細 |
 |------|------|
 | `package-lock.json` | コミット必須。バージョンの再現性を確保 |
-| メジャーバージョン | 明示的に固定（例: `"next": "^15.0.0"`） |
+| メジャーバージョン | 明示的に固定（例: `"next": "^16.0.0"`） |
 | 依存の最小化 | 不要なライブラリを入れない。本プロダクトの依存は最小限に抑える |
 
 ### 想定される dependencies
@@ -210,7 +210,7 @@
 ```json
 {
   "dependencies": {
-    "next": "^15.5.10",
+    "next": "^16.0.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0"
   },
@@ -229,12 +229,12 @@
 ```
 
 > **注意**:
-> - `next` は `^15.5.10` 以上（CVE-2025-66478 パッチ済みバージョン）
+> - `next` は `^16.0.0` を使用（CVE-2025-66478 修正済み。15系の場合は15.5.10以降が必須）
 > - `vitest` は4.xを使用。3.xからの主な破壊的変更: `poolOptions` 廃止、`vi.fn().getMockName()` のデフォルト値変更、`coverage.all` オプション廃止
 > - `jsdom` は26.x以上を使用（25.x は `punycode` 非推奨警告が発生）
 > - `postcss.config.mjs` で `@tailwindcss/postcss` プラグインの設定が必要（下記参照）
 
-### PostCSS設定（Next.js 15 + Tailwind CSS v4）
+### PostCSS設定（Next.js 16 + Tailwind CSS v4）
 
 プロジェクトルートに `postcss.config.mjs` を作成:
 

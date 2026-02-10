@@ -17,7 +17,7 @@
 | 3 | `piwf-output/lottery-simulator/error-handling.md` | エラーハンドリング設計（エラー分類、レイヤー別対応方針、バリデーション仕様） |
 | 3 | `piwf-output/lottery-simulator/test-strategy.md` | テスト戦略（単体/統合テスト方針、カバレッジ目標、CI/CD設計、モック方針） |
 | 3 | `piwf-output/lottery-simulator/design-system.md` | デザインシステム（カラーパレット、タイポグラフィ、スペーシング、コンポーネント規約） |
-| 3 | `piwf-output/lottery-simulator/library-notes.md` | ライブラリ対策（Next.js 15, Tailwind v4, Vitest, React 19のハマりどころ） |
+| 3 | `piwf-output/lottery-simulator/library-notes.md` | ライブラリ対策（Next.js 16, Tailwind v4, Vitest, React 19のハマりどころ） |
 | 3 | `piwf-output/lottery-simulator/task-breakdown.md` | タスク分割表（26タスク、依存関係図、Day 1〜15割り当て） |
 | - | `CLAUDE.md`（プロジェクトルート） | 実装時の行動指針 |
 

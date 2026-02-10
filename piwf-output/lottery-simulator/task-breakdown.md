@@ -58,7 +58,7 @@ Day 14-15: T-28（ブラウザテスト・最終調整）
 | 見積もり | 1日 |
 | 依存 | なし |
 | 対応機能 | - |
-| 作業内容 | Next.js 15プロジェクト作成、TypeScript設定、Tailwind CSS v4設定、Vitest設定、GitHub Actions CI設定、ESLint設定 |
+| 作業内容 | Next.js 16プロジェクト作成、TypeScript設定、Tailwind CSS v4設定、Vitest設定、GitHub Actions CI設定、ESLint設定 |
 | 完了条件 | `npm run dev` でページ表示、`npm test` でテスト実行、`npm run build` でビルド成功、CIが正常動作 |
 | 参照ドキュメント | library-notes.md（セットアップ時の注意点） |
 
