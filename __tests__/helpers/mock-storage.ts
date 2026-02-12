@@ -19,6 +19,8 @@ type MockStorageOptions = {
 type ErrorSimulation = {
   /** get時にパース不可能なデータを返す */
   corruptedKeys?: Set<string>;
+  /** get時に例外をスローするキー（データ破損シミュレーション） */
+  throwOnKeys?: Set<string>;
   /** set時にQuotaExceededErrorをスローする */
   quotaExceeded?: boolean;
 };
@@ -46,6 +48,11 @@ export function createMockStorage(
     _errors: errors,
 
     get<T>(key: string): T | null {
+      // 例外スローシミュレーション（データ破損でget自体が失敗するケース）
+      if (errors.throwOnKeys?.has(key)) {
+        throw new Error(`Corrupted data (key: ${key})`);
+      }
+
       // 破損データシミュレーション
       if (errors.corruptedKeys?.has(key)) {
         const raw = '{invalid json';
