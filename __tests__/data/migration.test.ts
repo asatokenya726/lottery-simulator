@@ -265,15 +265,8 @@ describe('checkAndMigrate', () => {
     it('status "reset"、fromVersion null、message付きを返す', () => {
       vi.spyOn(console, 'error').mockImplementation(() => {});
 
-      // storage.getが例外をスローするモックを作成
       const storage = createMockStorage();
-      const originalGet = storage.get.bind(storage);
-      storage.get = <T>(key: string): T | null => {
-        if (key === 'version') {
-          throw new Error('Corrupted data');
-        }
-        return originalGet<T>(key);
-      };
+      storage._errors.throwOnKeys = new Set(['version']);
 
       const result = checkAndMigrate(storage);
 
@@ -290,19 +283,12 @@ describe('checkAndMigrate', () => {
 
       const storage = createMockStorage();
       storage.set('gameState', { balance: 500 });
-
-      const originalGet = storage.get.bind(storage);
-      storage.get = <T>(key: string): T | null => {
-        if (key === 'version') {
-          throw new Error('Corrupted data');
-        }
-        return originalGet<T>(key);
-      };
+      storage._errors.throwOnKeys = new Set(['version']);
 
       checkAndMigrate(storage);
 
-      // getのオーバーライドを解除してバージョンを確認
-      storage.get = originalGet;
+      // throwOnKeysを解除してバージョンを確認
+      storage._errors.throwOnKeys = undefined;
       const savedVersion = storage.get<string>('version');
       expect(savedVersion).toBe(CURRENT_VERSION);
     });
@@ -311,9 +297,7 @@ describe('checkAndMigrate', () => {
       const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
 
       const storage = createMockStorage();
-      storage.get = () => {
-        throw new Error('Corrupted data');
-      };
+      storage._errors.throwOnKeys = new Set(['version']);
 
       checkAndMigrate(storage);
 
