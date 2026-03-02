@@ -50,7 +50,7 @@ describe('StatsPanel', () => {
       expect(screen.getByLabelText('累計収支')).toHaveTextContent('0.0%');
     });
 
-    it('回収率100%以上の場合にtext-accent-goldクラスで強調表示される', () => {
+    it('回収率100%以上の場合にtext-accent-goldクラスと▲記号で強調表示される', () => {
       const { container } = render(
         <StatsPanel {...defaultProps} totalSpent={100_000} totalWon={150_000} />
       );
@@ -61,10 +61,19 @@ describe('StatsPanel', () => {
       // 回収率100%以上のテキストにaccent-goldクラスが適用される
       const goldElement = container.querySelector('.text-accent-gold');
       expect(goldElement).not.toBeNull();
-      expect(goldElement).toHaveTextContent('150.0%');
+      expect(goldElement).toHaveTextContent('▲150.0%');
+
+      // 色以外の視覚的手がかり（▲記号）が表示される（WCAG 1.4.1 準拠）
+      expect(goldElement).toHaveTextContent('▲');
+
+      // aria-labelに「黒字」が含まれる
+      expect(goldElement).toHaveAttribute(
+        'aria-label',
+        '回収率 150.0% 黒字'
+      );
     });
 
-    it('回収率100%未満の場合はtext-text-primaryクラスが適用される', () => {
+    it('回収率100%未満の場合はtext-text-primaryクラスが適用され▲記号なし', () => {
       const { container } = render(
         <StatsPanel {...defaultProps} totalSpent={100_000} totalWon={50_000} />
       );
@@ -75,9 +84,12 @@ describe('StatsPanel', () => {
         el.textContent?.includes('50.0%')
       );
       expect(rateTexts).toHaveLength(0);
+
+      // ▲記号が表示されないことを確認
+      expect(screen.getByLabelText('累計収支')).not.toHaveTextContent('▲');
     });
 
-    it('回収率ちょうど100%の場合に強調表示される', () => {
+    it('回収率ちょうど100%の場合に強調表示と▲記号が表示される', () => {
       const { container } = render(
         <StatsPanel {...defaultProps} totalSpent={100_000} totalWon={100_000} />
       );
@@ -86,7 +98,7 @@ describe('StatsPanel', () => {
 
       const goldElement = container.querySelector('.text-accent-gold');
       expect(goldElement).not.toBeNull();
-      expect(goldElement).toHaveTextContent('100.0%');
+      expect(goldElement).toHaveTextContent('▲100.0%');
     });
   });
 

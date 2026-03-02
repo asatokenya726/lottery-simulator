@@ -79,7 +79,13 @@ export function StatsPanel({
             className={`text-sm font-bold tabular-nums ${
               isHighRecovery ? 'text-accent-gold' : 'text-text-primary'
             }`}
+            aria-label={
+              isHighRecovery
+                ? `回収率 ${formatRecoveryRate(recoveryRate)} 黒字`
+                : `回収率 ${formatRecoveryRate(recoveryRate)}`
+            }
           >
+            {isHighRecovery && '▲'}
             {formatRecoveryRate(recoveryRate)}
           </p>
         </div>
