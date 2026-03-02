@@ -1,3 +1,5 @@
+'use client';
+
 /** 残高不足メッセージコンポーネント（要件M-02準拠） */
 export function InsufficientFunds() {
   return (
