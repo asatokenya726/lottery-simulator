@@ -1,8 +1,8 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import type { DrawResult } from '@/types';
-import { DEFAULT_CONFIG } from '@/config/prize-config';
+import { getPrizeBgClass, getDisplayName } from './prize-utils';
 
 /** DrawAnimation の props 型定義 */
 type DrawAnimationProps = {
@@ -16,55 +16,6 @@ type DrawAnimationProps = {
 const REVEAL_INTERVAL_MS = 300;
 
 /**
- * 等級 -> Tailwind背景色クラスのマッピング
- *
- * DrawResultList と同一のマッピング。
- * 将来のリファクタリングで共通化を検討する。
- */
-const PRIZE_BG_CLASS: Record<string, string> = {
-  '1st': 'bg-prize-1st',
-  '1st-adj': 'bg-prize-1st-adjacent',
-  '1st-group': 'bg-prize-1st-group',
-  '2nd': 'bg-prize-2nd',
-  '3rd': 'bg-prize-3rd',
-  '4th': 'bg-prize-4th',
-  '5th': 'bg-prize-5th',
-  '6th': 'bg-prize-6th',
-  '7th': 'bg-prize-7th',
-};
-
-/** ハズレ時の背景色クラス */
-const MISS_BG_CLASS = 'bg-prize-miss';
-
-/**
- * 等級レベルから背景色クラスを取得する
- *
- * @param prizeLevel - 等級名（null = ハズレ）
- * @returns Tailwind背景色クラス
- */
-function getPrizeBgClass(prizeLevel: string | null): string {
-  if (prizeLevel === null) {
-    return MISS_BG_CLASS;
-  }
-  return PRIZE_BG_CLASS[prizeLevel] ?? MISS_BG_CLASS;
-}
-
-/**
- * 等級レベルから表示名を取得する
- *
- * @param prizeLevel - 等級名（null = ハズレ）
- * @returns 表示名
- */
-function getDisplayName(prizeLevel: string | null): string {
-  if (prizeLevel === null) {
-    return 'ハズレ';
-  }
-
-  const entry = DEFAULT_CONFIG.prizes.find((p) => p.level === prizeLevel);
-  return entry?.displayName ?? 'ハズレ';
-}
-
-/**
  * 10連ガチャ結果を順次表示するアニメーションコンポーネント
  *
  * 300ms間隔で1枚ずつ結果を表示し、当選時はスケールアップ演出を行う。
@@ -75,6 +26,8 @@ export function DrawAnimation({ results, onComplete }: DrawAnimationProps) {
   const [visibleCount, setVisibleCount] = useState(0);
   /** スキップ済みフラグ */
   const [isSkipped, setIsSkipped] = useState(false);
+  /** onComplete の二重呼び出し防止フラグ */
+  const hasCalledOnComplete = useRef(false);
 
   /** スキップ処理 */
   const handleSkip = useCallback(() => {
@@ -104,9 +57,14 @@ export function DrawAnimation({ results, onComplete }: DrawAnimationProps) {
     };
   }, [results.length, visibleCount]);
 
-  /** 全件表示完了時に onComplete を呼ぶ */
+  /** 全件表示完了時に onComplete を1回だけ呼ぶ */
   useEffect(() => {
-    if (results.length > 0 && visibleCount >= results.length) {
+    if (
+      results.length > 0 &&
+      visibleCount >= results.length &&
+      !hasCalledOnComplete.current
+    ) {
+      hasCalledOnComplete.current = true;
       onComplete();
     }
   }, [visibleCount, results.length, onComplete]);
