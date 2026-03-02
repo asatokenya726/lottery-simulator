@@ -338,9 +338,13 @@ describe('drawLottery', () => {
 
 // ============================================================
 // 大量試行テスト（ローカル専用）
+// npm run test:statistical で実行（RUN_STATISTICAL=true が必要）
 // ============================================================
 
-describe.skip('大量試行テスト（統計的検証）', () => {
+const describeStatistical =
+  process.env.RUN_STATISTICAL === 'true' ? describe : describe.skip;
+
+describeStatistical('大量試行テスト（統計的検証）', () => {
   it('100万回抽選で各等級の出現率が理論値+-20%以内', () => {
     const trials = 1_000_000;
     const prizes = createSimplePrizes();
