@@ -66,16 +66,16 @@ export function DrawResultList({ results }: DrawResultListProps) {
   }
 
   return (
-    <div className="grid grid-cols-2 gap-2" role="list" aria-label="抽選結果">
+    <ul className="grid grid-cols-2 gap-2 list-none p-0 m-0" aria-label="抽選結果">
       {results.map((result, index) => {
         const bgClass = getPrizeBgClass(result.prizeLevel);
         const displayName = getDisplayName(result.prizeLevel);
         const isWin = result.prizeLevel !== null;
 
+        // 10連の結果は固定順序で並び替えがないため index をキーとして使用
         return (
-          <div
-            key={index}
-            role="listitem"
+          <li
+            key={`result-${index}`}
             className="flex items-center justify-between rounded-lg bg-bg-secondary p-3"
           >
             <span
@@ -88,9 +88,9 @@ export function DrawResultList({ results }: DrawResultListProps) {
                 {result.amount.toLocaleString('ja-JP')}ぃえん
               </span>
             )}
-          </div>
+          </li>
         );
       })}
-    </div>
+    </ul>
   );
 }
