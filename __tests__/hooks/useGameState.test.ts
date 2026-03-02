@@ -52,9 +52,9 @@ const DRAW_COST = calculateDrawCost(
 beforeEach(() => {
   vi.restoreAllMocks();
   mockStorage._store.clear();
-  // 時刻を固定（2026-03-01 09:00:00 JST = 2026-03-01 00:00:00 UTC）
+  // 時刻を固定（UTC正午にすることで全TZで同日判定になる）
   vi.useFakeTimers();
-  vi.setSystemTime(new Date('2026-03-01T00:00:00.000Z'));
+  vi.setSystemTime(new Date('2026-03-01T12:00:00.000Z'));
 });
 
 afterEach(() => {
@@ -233,7 +233,7 @@ describe('executeDraw', () => {
     const beforeUpdatedAt = result.current.gameState.updatedAt;
 
     // 時刻を進める
-    vi.setSystemTime(new Date('2026-03-01T01:00:00.000Z'));
+    vi.setSystemTime(new Date('2026-03-01T13:00:00.000Z'));
 
     act(() => {
       result.current.executeDraw();
@@ -241,7 +241,7 @@ describe('executeDraw', () => {
 
     expect(result.current.gameState.updatedAt).not.toBe(beforeUpdatedAt);
     expect(result.current.gameState.updatedAt).toBe(
-      '2026-03-01T01:00:00.000Z'
+      '2026-03-01T13:00:00.000Z'
     );
   });
 });
@@ -335,13 +335,8 @@ describe('checkAndRefill', () => {
   });
 
   it('同日の場合、補給されずに false を返す', () => {
-    // formatDateToYMD(new Date('2026-03-01T00:00:00.000Z')) はTZ依存
-    // fakeTimers で 2026-03-01 に固定しているので、その日のYMDを設定
-    const today = new Date('2026-03-01T00:00:00.000Z');
-    const year = today.getFullYear();
-    const month = String(today.getMonth() + 1).padStart(2, '0');
-    const day = String(today.getDate()).padStart(2, '0');
-    const todayStr = `${year}-${month}-${day}`;
+    // fakeTimers で 2026-03-01T12:00:00Z に固定しているので、ローカルTZでも 2026-03-01
+    const todayStr = '2026-03-01';
 
     const state = createGameState({
       balance: 0,
@@ -509,7 +504,7 @@ describe('dismissFirstVisit', () => {
     const { result } = renderHook(() => useGameState());
     const beforeUpdatedAt = result.current.gameState.updatedAt;
 
-    vi.setSystemTime(new Date('2026-03-01T05:00:00.000Z'));
+    vi.setSystemTime(new Date('2026-03-01T15:00:00.000Z'));
 
     act(() => {
       result.current.dismissFirstVisit();
