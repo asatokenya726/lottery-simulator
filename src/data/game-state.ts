@@ -16,7 +16,7 @@ const STORAGE_KEY = 'gameState';
  *
  * toISOString()はUTCベースのため、ローカルタイムゾーンの日付を使用する。
  */
-function formatDateToYMD(date: Date): string {
+export function formatDateToYMD(date: Date): string {
   const year = date.getFullYear();
   const month = String(date.getMonth() + 1).padStart(2, '0');
   const day = String(date.getDate()).padStart(2, '0');
