@@ -164,6 +164,78 @@ describe('ResetButton', () => {
   });
 
   // ===========================================
+  // アクセシビリティ
+  // ===========================================
+
+  describe('アクセシビリティ', () => {
+    it('トリガーボタンに aria-expanded が設定されている（初期: false）', () => {
+      render(<ResetButton {...defaultProps} />);
+
+      expect(
+        screen.getByRole('button', { name: 'データをリセット' })
+      ).toHaveAttribute('aria-expanded', 'false');
+    });
+
+    it('確認UI表示時に aria-expanded が true になる', async () => {
+      render(<ResetButton {...defaultProps} />);
+
+      await userEvent.click(
+        screen.getByRole('button', { name: 'データをリセット' })
+      );
+
+      expect(
+        screen.getByRole('button', { name: 'データをリセット' })
+      ).toHaveAttribute('aria-expanded', 'true');
+    });
+
+    it('alertdialog に aria-labelledby でタイトルが参照されている', async () => {
+      render(<ResetButton {...defaultProps} />);
+
+      await userEvent.click(
+        screen.getByRole('button', { name: 'データをリセット' })
+      );
+
+      const dialog = screen.getByRole('alertdialog');
+      const labelledBy = dialog.getAttribute('aria-labelledby');
+      expect(labelledBy).toBeTruthy();
+
+      const titleElement = document.getElementById(labelledBy!);
+      expect(titleElement).toBeInTheDocument();
+      expect(titleElement).toHaveTextContent('データリセットの確認');
+    });
+
+    it('alertdialog に aria-describedby で説明が参照されている', async () => {
+      render(<ResetButton {...defaultProps} />);
+
+      await userEvent.click(
+        screen.getByRole('button', { name: 'データをリセット' })
+      );
+
+      const dialog = screen.getByRole('alertdialog');
+      const describedBy = dialog.getAttribute('aria-describedby');
+      expect(describedBy).toBeTruthy();
+
+      const descElement = document.getElementById(describedBy!);
+      expect(descElement).toBeInTheDocument();
+      expect(descElement).toHaveTextContent(
+        '全てのゲームデータが削除されます。この操作は元に戻せません。'
+      );
+    });
+
+    it('確認ダイアログ表示時にキャンセルボタンへフォーカスが移る', async () => {
+      render(<ResetButton {...defaultProps} />);
+
+      await userEvent.click(
+        screen.getByRole('button', { name: 'データをリセット' })
+      );
+
+      expect(
+        screen.getByRole('button', { name: 'キャンセル' })
+      ).toHaveFocus();
+    });
+  });
+
+  // ===========================================
   // エッジケース
   // ===========================================
 

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 
 /** ResetButton の props 型定義 */
 type ResetButtonProps = {
@@ -8,7 +8,8 @@ type ResetButtonProps = {
   onReset: () => void;
 };
 
-/** 確認ID（aria-describedby用） */
+/** 確認ダイアログのID（aria用） */
+const CONFIRM_TITLE_ID = 'reset-confirm-title';
 const CONFIRM_DESC_ID = 'reset-confirm-description';
 
 /**
@@ -21,6 +22,14 @@ const CONFIRM_DESC_ID = 'reset-confirm-description';
  */
 export function ResetButton({ onReset }: ResetButtonProps) {
   const [isConfirming, setIsConfirming] = useState(false);
+  const cancelButtonRef = useRef<HTMLButtonElement>(null);
+
+  /** 確認ダイアログ表示時にキャンセルボタンへフォーカス（誤操作防止） */
+  useEffect(() => {
+    if (isConfirming) {
+      cancelButtonRef.current?.focus();
+    }
+  }, [isConfirming]);
 
   /** 確認ダイアログを開く */
   const handleOpenConfirm = () => {
@@ -43,6 +52,7 @@ export function ResetButton({ onReset }: ResetButtonProps) {
       <button
         type="button"
         onClick={handleOpenConfirm}
+        aria-expanded={isConfirming}
         className="text-error text-sm font-medium cursor-pointer transition-colors hover:text-error/80 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-error"
       >
         データをリセット
@@ -51,9 +61,16 @@ export function ResetButton({ onReset }: ResetButtonProps) {
       {isConfirming && (
         <div
           role="alertdialog"
+          aria-labelledby={CONFIRM_TITLE_ID}
           aria-describedby={CONFIRM_DESC_ID}
           className="mt-3 bg-bg-secondary rounded-lg p-4 border border-error/30"
         >
+          <p
+            id={CONFIRM_TITLE_ID}
+            className="text-text-primary text-sm font-semibold mb-1"
+          >
+            データリセットの確認
+          </p>
           <p id={CONFIRM_DESC_ID} className="text-text-secondary text-sm mb-3">
             全てのゲームデータが削除されます。この操作は元に戻せません。
           </p>
@@ -66,9 +83,10 @@ export function ResetButton({ onReset }: ResetButtonProps) {
               リセット実行
             </button>
             <button
+              ref={cancelButtonRef}
               type="button"
               onClick={handleCancel}
-              className="bg-bg-tertiary text-text-secondary px-4 py-2 text-sm font-semibold rounded-md cursor-pointer transition-colors hover:bg-bg-tertiary/80 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-bg-tertiary"
+              className="bg-bg-tertiary text-text-secondary px-4 py-2 text-sm font-semibold rounded-md cursor-pointer transition-colors hover:bg-bg-tertiary/80 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-text-primary"
             >
               キャンセル
             </button>
