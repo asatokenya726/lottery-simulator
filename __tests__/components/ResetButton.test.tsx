@@ -29,7 +29,7 @@ describe('ResetButton', () => {
     it('初期状態では確認UIが表示されない', () => {
       render(<ResetButton {...defaultProps} />);
 
-      expect(screen.queryByRole('alert')).not.toBeInTheDocument();
+      expect(screen.queryByRole('alertdialog')).not.toBeInTheDocument();
     });
 
     it('初期状態では警告文が表示されない', () => {
@@ -53,7 +53,7 @@ describe('ResetButton', () => {
         screen.getByRole('button', { name: 'データをリセット' })
       );
 
-      expect(screen.getByRole('alert')).toBeInTheDocument();
+      expect(screen.getByRole('alertdialog')).toBeInTheDocument();
     });
 
     it('確認UIに警告文が含まれる', async () => {
@@ -124,7 +124,7 @@ describe('ResetButton', () => {
         screen.getByRole('button', { name: 'リセット実行' })
       );
 
-      expect(screen.queryByRole('alert')).not.toBeInTheDocument();
+      expect(screen.queryByRole('alertdialog')).not.toBeInTheDocument();
     });
   });
 
@@ -139,13 +139,13 @@ describe('ResetButton', () => {
       await userEvent.click(
         screen.getByRole('button', { name: 'データをリセット' })
       );
-      expect(screen.getByRole('alert')).toBeInTheDocument();
+      expect(screen.getByRole('alertdialog')).toBeInTheDocument();
 
       await userEvent.click(
         screen.getByRole('button', { name: 'キャンセル' })
       );
 
-      expect(screen.queryByRole('alert')).not.toBeInTheDocument();
+      expect(screen.queryByRole('alertdialog')).not.toBeInTheDocument();
     });
 
     it('「キャンセル」クリックで onReset は呼ばれない', async () => {
@@ -178,13 +178,13 @@ describe('ResetButton', () => {
       await userEvent.click(
         screen.getByRole('button', { name: 'キャンセル' })
       );
-      expect(screen.queryByRole('alert')).not.toBeInTheDocument();
+      expect(screen.queryByRole('alertdialog')).not.toBeInTheDocument();
 
       // 2回目: 再度開く
       await userEvent.click(
         screen.getByRole('button', { name: 'データをリセット' })
       );
-      expect(screen.getByRole('alert')).toBeInTheDocument();
+      expect(screen.getByRole('alertdialog')).toBeInTheDocument();
     });
 
     it('リセット実行後に再度確認ダイアログを開ける', async () => {
@@ -204,7 +204,7 @@ describe('ResetButton', () => {
       await userEvent.click(
         screen.getByRole('button', { name: 'データをリセット' })
       );
-      expect(screen.getByRole('alert')).toBeInTheDocument();
+      expect(screen.getByRole('alertdialog')).toBeInTheDocument();
     });
 
     it('確認ダイアログが閉じた状態で onReset が呼ばれることはない', () => {

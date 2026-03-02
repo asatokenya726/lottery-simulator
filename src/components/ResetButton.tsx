@@ -8,7 +8,17 @@ type ResetButtonProps = {
   onReset: () => void;
 };
 
-/** 確認ダイアログ付きデータリセットボタン */
+/** 確認ID（aria-describedby用） */
+const CONFIRM_DESC_ID = 'reset-confirm-description';
+
+/**
+ * 確認ダイアログ付きデータリセットボタン
+ *
+ * トリガーボタンは ghost 風スタイル（text-error のみ）を採用。
+ * デザインシステムの danger variant（bg-error）はモーダル内の
+ * 最終確認ボタンに使用し、トリガーは控えめにすることで
+ * 誤操作を防ぐUX判断。
+ */
 export function ResetButton({ onReset }: ResetButtonProps) {
   const [isConfirming, setIsConfirming] = useState(false);
 
@@ -33,7 +43,6 @@ export function ResetButton({ onReset }: ResetButtonProps) {
       <button
         type="button"
         onClick={handleOpenConfirm}
-        aria-label="データをリセット"
         className="text-error text-sm font-medium cursor-pointer transition-colors hover:text-error/80 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-error"
       >
         データをリセット
@@ -41,10 +50,11 @@ export function ResetButton({ onReset }: ResetButtonProps) {
 
       {isConfirming && (
         <div
-          role="alert"
+          role="alertdialog"
+          aria-describedby={CONFIRM_DESC_ID}
           className="mt-3 bg-bg-secondary rounded-lg p-4 border border-error/30"
         >
-          <p className="text-text-secondary text-sm mb-3">
+          <p id={CONFIRM_DESC_ID} className="text-text-secondary text-sm mb-3">
             全てのゲームデータが削除されます。この操作は元に戻せません。
           </p>
           <div className="flex gap-3">
