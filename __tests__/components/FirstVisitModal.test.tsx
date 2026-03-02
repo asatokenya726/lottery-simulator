@@ -1,13 +1,18 @@
-import { describe, it, expect, vi } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { FirstVisitModal } from '@/components/FirstVisitModal';
 
 describe('FirstVisitModal', () => {
+  /** テスト間のモック汚染を防止 */
   const defaultProps = {
     isOpen: true,
     onAccept: vi.fn(),
   };
+
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
 
   // ===========================================
   // 基本動作

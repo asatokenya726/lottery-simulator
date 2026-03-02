@@ -132,7 +132,7 @@ export function FirstVisitModal({ isOpen, onAccept }: FirstVisitModalProps) {
           ref={acceptButtonRef}
           type="button"
           onClick={onAccept}
-          className="mt-6 w-full bg-accent-gold text-white py-3 rounded-md font-semibold shadow-sm transition-colors hover:bg-accent-gold-light active:bg-accent-gold-dark focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-accent-gold"
+          className="mt-6 w-full bg-accent-gold text-bg-primary py-3 rounded-md font-semibold shadow-sm transition-colors hover:bg-accent-gold-light active:bg-accent-gold-dark focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-accent-gold"
         >
           了承して始める
         </button>
