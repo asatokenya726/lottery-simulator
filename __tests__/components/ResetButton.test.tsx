@@ -233,6 +233,67 @@ describe('ResetButton', () => {
         screen.getByRole('button', { name: 'キャンセル' })
       ).toHaveFocus();
     });
+
+    it('Escapeキーで確認ダイアログが閉じる', async () => {
+      render(<ResetButton {...defaultProps} />);
+
+      await userEvent.click(
+        screen.getByRole('button', { name: 'データをリセット' })
+      );
+      expect(screen.getByRole('alertdialog')).toBeInTheDocument();
+
+      await userEvent.keyboard('{Escape}');
+
+      expect(screen.queryByRole('alertdialog')).not.toBeInTheDocument();
+    });
+
+    it('Escapeキーで閉じた場合 onReset は呼ばれない', async () => {
+      const onReset = vi.fn();
+      render(<ResetButton onReset={onReset} />);
+
+      await userEvent.click(
+        screen.getByRole('button', { name: 'データをリセット' })
+      );
+      await userEvent.keyboard('{Escape}');
+
+      expect(onReset).not.toHaveBeenCalled();
+    });
+
+    it('キャンセル後にトリガーボタンへフォーカスが戻る', async () => {
+      render(<ResetButton {...defaultProps} />);
+
+      await userEvent.click(
+        screen.getByRole('button', { name: 'データをリセット' })
+      );
+      await userEvent.click(
+        screen.getByRole('button', { name: 'キャンセル' })
+      );
+
+      /** requestAnimationFrame を消化 */
+      await vi.waitFor(() => {
+        expect(
+          screen.getByRole('button', { name: 'データをリセット' })
+        ).toHaveFocus();
+      });
+    });
+
+    it('リセット実行後にトリガーボタンへフォーカスが戻る', async () => {
+      render(<ResetButton {...defaultProps} />);
+
+      await userEvent.click(
+        screen.getByRole('button', { name: 'データをリセット' })
+      );
+      await userEvent.click(
+        screen.getByRole('button', { name: 'リセット実行' })
+      );
+
+      /** requestAnimationFrame を消化 */
+      await vi.waitFor(() => {
+        expect(
+          screen.getByRole('button', { name: 'データをリセット' })
+        ).toHaveFocus();
+      });
+    });
   });
 
   // ===========================================

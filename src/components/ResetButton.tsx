@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useCallback } from 'react';
 
 /** ResetButton の props 型定義 */
 type ResetButtonProps = {
@@ -22,6 +22,7 @@ const CONFIRM_DESC_ID = 'reset-confirm-description';
  */
 export function ResetButton({ onReset }: ResetButtonProps) {
   const [isConfirming, setIsConfirming] = useState(false);
+  const triggerButtonRef = useRef<HTMLButtonElement>(null);
   const cancelButtonRef = useRef<HTMLButtonElement>(null);
 
   /** 確認ダイアログ表示時にキャンセルボタンへフォーカス（誤操作防止） */
@@ -36,20 +37,38 @@ export function ResetButton({ onReset }: ResetButtonProps) {
     setIsConfirming(true);
   };
 
+  /** ダイアログを閉じてトリガーボタンにフォーカスを戻す */
+  const closeDialog = useCallback(() => {
+    setIsConfirming(false);
+    /** setState後のレンダリング完了を待ってフォーカスを戻す */
+    requestAnimationFrame(() => {
+      triggerButtonRef.current?.focus();
+    });
+  }, []);
+
   /** リセットを実行してダイアログを閉じる */
   const handleConfirmReset = () => {
     onReset();
-    setIsConfirming(false);
+    closeDialog();
   };
 
   /** キャンセルしてダイアログを閉じる */
   const handleCancel = () => {
-    setIsConfirming(false);
+    closeDialog();
+  };
+
+  /** Escapeキーでダイアログを閉じる（WAI-ARIA APGダイアログパターン準拠） */
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'Escape') {
+      e.preventDefault();
+      closeDialog();
+    }
   };
 
   return (
     <div>
       <button
+        ref={triggerButtonRef}
         type="button"
         onClick={handleOpenConfirm}
         aria-expanded={isConfirming}
@@ -63,6 +82,7 @@ export function ResetButton({ onReset }: ResetButtonProps) {
           role="alertdialog"
           aria-labelledby={CONFIRM_TITLE_ID}
           aria-describedby={CONFIRM_DESC_ID}
+          onKeyDown={handleKeyDown}
           className="mt-3 bg-bg-secondary rounded-lg p-4 border border-error/30"
         >
           <p
