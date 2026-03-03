@@ -198,6 +198,104 @@ describe('selectPrize', () => {
       expect(result7th).not.toBeNull();
       expect(result7th!.level).toBe('7th');
     });
+
+    it('1等前後賞と1等組違い賞の境界値を正しく判定する', () => {
+      // 1等前後賞までの累積weight: 1+2 = 3
+      // target = 2 → 1等前後賞区間の末尾
+      const randomAdjEnd = 2 / totalWeight;
+      const resultAdj = selectPrize(jumboConfig.prizes, randomAdjEnd);
+      expect(resultAdj).not.toBeNull();
+      expect(resultAdj!.level).toBe('1st-adj');
+
+      // target = 3 → 1等組違い賞区間の先頭
+      const randomGroupStart = 3 / totalWeight;
+      const resultGroup = selectPrize(jumboConfig.prizes, randomGroupStart);
+      expect(resultGroup).not.toBeNull();
+      expect(resultGroup!.level).toBe('1st-group');
+    });
+
+    it('1等組違い賞と2等の境界値を正しく判定する', () => {
+      // 1等組違い賞までの累積weight: 1+2+199 = 202
+      const randomGroupEnd = 201 / totalWeight;
+      const resultGroup = selectPrize(jumboConfig.prizes, randomGroupEnd);
+      expect(resultGroup).not.toBeNull();
+      expect(resultGroup!.level).toBe('1st-group');
+
+      const random2ndStart = 202 / totalWeight;
+      const result2nd = selectPrize(jumboConfig.prizes, random2ndStart);
+      expect(result2nd).not.toBeNull();
+      expect(result2nd!.level).toBe('2nd');
+    });
+
+    it('2等と3等の境界値を正しく判定する', () => {
+      // 2等までの累積weight: 202+8 = 210
+      const random2ndEnd = 209 / totalWeight;
+      const result2nd = selectPrize(jumboConfig.prizes, random2ndEnd);
+      expect(result2nd).not.toBeNull();
+      expect(result2nd!.level).toBe('2nd');
+
+      const random3rdStart = 210 / totalWeight;
+      const result3rd = selectPrize(jumboConfig.prizes, random3rdStart);
+      expect(result3rd).not.toBeNull();
+      expect(result3rd!.level).toBe('3rd');
+    });
+
+    it('3等と4等の境界値を正しく判定する', () => {
+      // 3等までの累積weight: 210+400 = 610
+      const random3rdEnd = 609 / totalWeight;
+      const result3rd = selectPrize(jumboConfig.prizes, random3rdEnd);
+      expect(result3rd).not.toBeNull();
+      expect(result3rd!.level).toBe('3rd');
+
+      const random4thStart = 610 / totalWeight;
+      const result4th = selectPrize(jumboConfig.prizes, random4thStart);
+      expect(result4th).not.toBeNull();
+      expect(result4th!.level).toBe('4th');
+    });
+
+    it('4等と5等の境界値を正しく判定する', () => {
+      // 4等までの累積weight: 610+2000 = 2,610
+      const random4thEnd = 2_609 / totalWeight;
+      const result4th = selectPrize(jumboConfig.prizes, random4thEnd);
+      expect(result4th).not.toBeNull();
+      expect(result4th!.level).toBe('4th');
+
+      const random5thStart = 2_610 / totalWeight;
+      const result5th = selectPrize(jumboConfig.prizes, random5thStart);
+      expect(result5th).not.toBeNull();
+      expect(result5th!.level).toBe('5th');
+    });
+
+    it('5等と6等の境界値を正しく判定する', () => {
+      // 5等までの累積weight: 2,610+20,000 = 22,610
+      const random5thEnd = 22_609 / totalWeight;
+      const result5th = selectPrize(jumboConfig.prizes, random5thEnd);
+      expect(result5th).not.toBeNull();
+      expect(result5th!.level).toBe('5th');
+
+      const random6thStart = 22_610 / totalWeight;
+      const result6th = selectPrize(jumboConfig.prizes, random6thStart);
+      expect(result6th).not.toBeNull();
+      expect(result6th!.level).toBe('6th');
+    });
+  });
+
+  describe('フォールバック安全策', () => {
+    it('random=1.0（forループ完走）で最後のエントリを返す', () => {
+      // random=1.0 → target = Math.floor(1.0 * 100) = 100
+      // 累積weightは最大100 → target < cumulative が成立せずforループ完走
+      // 52行目のフォールバックが実行される
+      const prizes = createSimplePrizes();
+      const result = selectPrize(prizes, 1.0);
+      expect(result).not.toBeNull();
+      expect(result!.level).toBe('C');
+    });
+
+    it('年末ジャンボでrandom=1.0の場合、ハズレ（最後のエントリ）を返す', () => {
+      const result = selectPrize(NENMATSU_JUMBO_2024.prizes, 1.0);
+      expect(result).not.toBeNull();
+      expect(result!.level).toBe('miss');
+    });
   });
 });
 

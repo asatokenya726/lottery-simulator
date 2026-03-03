@@ -128,3 +128,51 @@ describe('calculateDrawCost', () => {
     expect(calculateDrawCost(300, 100)).toBe(30_000);
   });
 });
+
+// ============================================================
+// エッジケース追加（負数・極端な値）
+// ============================================================
+
+describe('canPurchase — 追加エッジケース', () => {
+  it('残高が負数の場合、falseを返す', () => {
+    expect(canPurchase(-1, 3_000)).toBe(false);
+  });
+
+  it('購入額が負数の場合、trueを返す（balance >= cost が成立）', () => {
+    expect(canPurchase(0, -1)).toBe(true);
+  });
+});
+
+describe('deductBalance — 追加エッジケース', () => {
+  it('購入額が負数の場合、残高が増える（バリデーションは呼び出し元の責務）', () => {
+    expect(deductBalance(10_000, -500)).toBe(10_500);
+  });
+
+  it('Number.MAX_SAFE_INTEGERに近い値でも正しく計算する', () => {
+    const largeBalance = Number.MAX_SAFE_INTEGER - 1_000;
+    expect(deductBalance(largeBalance, 1_000)).toBe(
+      Number.MAX_SAFE_INTEGER - 2_000
+    );
+  });
+});
+
+describe('addWinnings — 追加エッジケース', () => {
+  it('当選金が負数の場合、残高が減る（バリデーションは呼び出し元の責務）', () => {
+    expect(addWinnings(10_000, -500)).toBe(9_500);
+  });
+
+  it('Number.MAX_SAFE_INTEGERに近い値での加算', () => {
+    const nearMax = Number.MAX_SAFE_INTEGER - 100;
+    expect(addWinnings(nearMax, 50)).toBe(Number.MAX_SAFE_INTEGER - 50);
+  });
+});
+
+describe('calculateDrawCost — 追加エッジケース', () => {
+  it('枚数が負数の場合、負の購入額を返す', () => {
+    expect(calculateDrawCost(300, -1)).toBe(-300);
+  });
+
+  it('チケット価格が負数の場合、負の購入額を返す', () => {
+    expect(calculateDrawCost(-300, 10)).toBe(-3_000);
+  });
+});

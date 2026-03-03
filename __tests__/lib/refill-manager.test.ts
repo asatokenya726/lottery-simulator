@@ -100,3 +100,34 @@ describe('applyRefill', () => {
     expect(applyRefill(700_000_000, 30_000)).toBe(700_030_000);
   });
 });
+
+// ============================================================
+// 追加エッジケース
+// ============================================================
+
+describe('shouldRefill — 追加エッジケース', () => {
+  const threshold = GAME_CONSTANTS.REFILL_THRESHOLD;
+
+  it('todayがlastRefillDateより過去の場合、falseを返す', () => {
+    // 端末の日付が巻き戻った場合等
+    expect(shouldRefill(100, '2026-01-05', '2026-01-03', threshold)).toBe(
+      false
+    );
+  });
+
+  it('threshold=0の場合、残高が0でもfalseを返す（0 < 0 は false）', () => {
+    expect(shouldRefill(0, '2026-01-01', '2026-01-02', 0)).toBe(false);
+  });
+
+  it('残高が負数の場合、trueを返す（閾値未満）', () => {
+    expect(shouldRefill(-100, '2026-01-01', '2026-01-02', threshold)).toBe(
+      true
+    );
+  });
+
+  it('同じ日付文字列は同日と判定される', () => {
+    expect(shouldRefill(100, '2026-03-03', '2026-03-03', threshold)).toBe(
+      false
+    );
+  });
+});
