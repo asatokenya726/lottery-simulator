@@ -14,6 +14,7 @@ src/
 │   ├── layout.tsx        # ルートレイアウト（metadata定義、注意喚起フッター）
 │   ├── page.tsx          # メインページ（"use client"）
 │   ├── terms/page.tsx    # 利用規約（静的）
+│   ├── error.tsx         # エラーバウンダリ（フォールバックUI）
 │   └── globals.css       # Tailwind CSS v4 エントリ（@theme定義）
 ├── components/           # Presentation Layer — UIコンポーネント
 ├── hooks/                # Hooks Layer — 状態管理・操作フロー
