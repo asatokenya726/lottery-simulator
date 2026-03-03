@@ -24,11 +24,13 @@ describe('DrawAnimation', () => {
 
     render(<DrawAnimation results={results} onComplete={onComplete} />);
 
-    const items = screen.getAllByRole('listitem');
+    // aria-hidden="true" の要素も含めて取得
+    const items = screen.getAllByRole('listitem', { hidden: true });
 
-    // 初期状態: 全てopacity-0
+    // 初期状態: 全てopacity-0（aria-hidden="true"）
     for (const item of items) {
       expect(item.className).toContain('opacity-0');
+      expect(item).toHaveAttribute('aria-hidden', 'true');
     }
 
     // 1回目のインターバル後: 1枚目が表示

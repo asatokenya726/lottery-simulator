@@ -91,6 +91,7 @@ export function DrawAnimation({ results, onComplete }: DrawAnimationProps) {
           return (
             <li
               key={`anim-result-${index}`}
+              aria-hidden={!isVisible}
               className={`flex items-center justify-between rounded-lg bg-bg-secondary p-3 ${
                 isVisible
                   ? isWin
