@@ -41,6 +41,41 @@ export function getPrizeBgClass(prizeLevel: string | null): string {
 }
 
 /**
+ * 等級別アニメーションクラスのマッピング
+ *
+ * 1等: 最も派手な金色フラッシュ + 大きめスケール
+ * 1等前後賞/1等組違い/2等: 控えめフラッシュ + 中スケール
+ * 3等〜7等: スケールのみ（フラッシュなし）
+ */
+const PRIZE_ANIMATION_CLASS: Record<string, string> = {
+  '1st': 'animate-flash-jackpot scale-110 motion-reduce:animate-none motion-reduce:scale-100',
+  '1st-adj': 'animate-flash-high scale-107 motion-reduce:animate-none motion-reduce:scale-100',
+  '1st-group': 'animate-flash-high scale-107 motion-reduce:animate-none motion-reduce:scale-100',
+  '2nd': 'animate-flash-high scale-107 motion-reduce:animate-none motion-reduce:scale-100',
+  '3rd': 'scale-105 motion-reduce:scale-100',
+  '4th': 'scale-105 motion-reduce:scale-100',
+  '5th': 'scale-105 motion-reduce:scale-100',
+  '6th': 'scale-105 motion-reduce:scale-100',
+  '7th': 'scale-105 motion-reduce:scale-100',
+};
+
+/**
+ * 等級レベルからアニメーションクラスを取得する
+ *
+ * 当選等級に応じたCSSアニメーション + スケールクラスを返す。
+ * ハズレ（null）や未知の等級の場合は空文字列を返す。
+ *
+ * @param prizeLevel - 等級名（null = ハズレ）
+ * @returns アニメーション用クラス文字列（空文字列 = 演出なし）
+ */
+export function getPrizeAnimationClass(prizeLevel: string | null): string {
+  if (prizeLevel === null) {
+    return '';
+  }
+  return PRIZE_ANIMATION_CLASS[prizeLevel] ?? '';
+}
+
+/**
  * 等級レベルから表示名を取得する
  *
  * DEFAULT_CONFIGのprizesからlevelで検索して displayName を返す。

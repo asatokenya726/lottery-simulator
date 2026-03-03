@@ -54,3 +54,62 @@
   --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.5);
   --shadow-glow: 0 0 20px rgba(245, 158, 11, 0.3);
 }
+
+/* 等級別フラッシュアニメーション */
+
+/* 1等用: 金色→赤→金色の派手なフラッシュ + グロー */
+@keyframes flash-jackpot {
+  0% {
+    background-color: transparent;
+    box-shadow: none;
+  }
+  15% {
+    background-color: rgba(245, 158, 11, 0.4);
+    box-shadow: 0 0 20px rgba(245, 158, 11, 0.6);
+  }
+  40% {
+    background-color: rgba(239, 68, 68, 0.3);
+    box-shadow: 0 0 30px rgba(239, 68, 68, 0.5);
+  }
+  65% {
+    background-color: rgba(245, 158, 11, 0.35);
+    box-shadow: 0 0 25px rgba(245, 158, 11, 0.5);
+  }
+  100% {
+    background-color: transparent;
+    box-shadow: none;
+  }
+}
+
+/* 上位等級用（1等前後賞/1等組違い/2等）: 等級カラーの控えめフラッシュ */
+@keyframes flash-high {
+  0% {
+    background-color: transparent;
+    box-shadow: none;
+  }
+  25% {
+    background-color: rgba(168, 85, 247, 0.3);
+    box-shadow: 0 0 15px rgba(168, 85, 247, 0.4);
+  }
+  100% {
+    background-color: transparent;
+    box-shadow: none;
+  }
+}
+
+/* カスタムユーティリティ: Tailwind CSS v4 */
+@utility animate-flash-jackpot {
+  animation: flash-jackpot 0.8s ease-out;
+}
+
+@utility animate-flash-high {
+  animation: flash-high 0.6s ease-out;
+}
+
+/* アクセシビリティ: モーション軽減設定 */
+@media (prefers-reduced-motion: reduce) {
+  .animate-flash-jackpot,
+  .animate-flash-high {
+    animation: none;
+  }
+}
