@@ -25,7 +25,7 @@ export function GachaButton({ onDraw, canDraw, isDrawing }: GachaButtonProps) {
         onClick={onDraw}
         disabled={isDisabled}
         aria-busy={isDrawing}
-        className="bg-accent-gold text-white px-8 py-4 lg:px-10 lg:py-5 text-lg lg:text-xl font-semibold rounded-md shadow-sm transition-all enabled:hover:bg-accent-gold-light enabled:active:bg-accent-gold-dark enabled:active:scale-95 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-accent-gold disabled:opacity-50 disabled:cursor-not-allowed"
+        className="bg-accent-gold text-white px-8 py-4 text-lg font-semibold rounded-md shadow-sm transition-all enabled:hover:bg-accent-gold-light enabled:active:bg-accent-gold-dark enabled:active:scale-95 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-accent-gold disabled:opacity-50 disabled:cursor-not-allowed"
       >
         {isDrawing ? '抽選中...' : '10連ガチャ！（3,000ぃえん）'}
       </button>

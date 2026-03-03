@@ -9,9 +9,9 @@ export function BalanceDisplay({ balance }: BalanceDisplayProps) {
   return (
     <div className="text-center" role="status" aria-label="所持金">
       <p className="text-sm text-text-secondary">所持金</p>
-      <p className="text-3xl lg:text-4xl font-bold text-accent-gold tabular-nums">
+      <p className="text-3xl font-bold text-accent-gold tabular-nums">
         {balance.toLocaleString('ja-JP')}
-        <span className="text-xl lg:text-2xl font-semibold ml-1">ぃえん</span>
+        <span className="text-xl font-semibold ml-1">ぃえん</span>
       </p>
     </div>
   );
