@@ -32,29 +32,29 @@ export function RefillNotice({ isVisible, amount, onDismiss }: RefillNoticeProps
 
   return (
     <div
-      role="alert"
+      aria-live="polite"
       aria-atomic="true"
-      aria-hidden={!isVisible}
       className={`
         rounded-lg p-4 bg-success/10
         transition-opacity duration-300 ease-out
         ${isVisible ? 'opacity-100' : 'opacity-0 pointer-events-none'}
       `}
     >
-      <div className="flex items-center justify-between gap-2">
-        <p className="text-success text-sm font-medium">
-          {amount.toLocaleString('ja-JP')} ぃえん補給されました
-        </p>
-        <button
-          type="button"
-          onClick={onDismiss}
-          tabIndex={isVisible ? 0 : -1}
-          className="text-success/70 hover:text-success text-lg leading-none cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-success"
-          aria-label="通知を閉じる"
-        >
-          &times;
-        </button>
-      </div>
+      {isVisible && (
+        <div className="flex items-center justify-between gap-2">
+          <p className="text-success text-sm font-medium">
+            {amount.toLocaleString('ja-JP')} ぃえん補給されました
+          </p>
+          <button
+            type="button"
+            onClick={onDismiss}
+            className="text-success/70 hover:text-success text-lg leading-none cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-success"
+            aria-label="通知を閉じる"
+          >
+            &times;
+          </button>
+        </div>
+      )}
     </div>
   );
 }
