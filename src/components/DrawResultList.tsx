@@ -14,7 +14,7 @@ export function DrawResultList({ results }: DrawResultListProps) {
   }
 
   return (
-    <ul className="grid grid-cols-2 gap-2 list-none p-0 m-0" aria-label="抽選結果">
+    <ul className="grid grid-cols-2 gap-2 sm:gap-3 list-none p-0 m-0" aria-label="抽選結果">
       {results.map((result, index) => {
         const bgClass = getPrizeBgClass(result.prizeLevel);
         const displayName = getDisplayName(result.prizeLevel);

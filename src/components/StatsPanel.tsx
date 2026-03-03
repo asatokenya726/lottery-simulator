@@ -58,7 +58,7 @@ export function StatsPanel({
       </h2>
 
       {/* 上段: 累計購入額・当選額・回収率 */}
-      <div className="grid grid-cols-3 gap-3 mb-4">
+      <div className="grid grid-cols-3 gap-2 sm:gap-3 mb-4">
         <div className="text-center">
           <p className="text-xs text-text-secondary mb-1">累計購入額</p>
           <p className="text-sm font-bold text-text-primary tabular-nums">
