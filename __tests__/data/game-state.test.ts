@@ -386,6 +386,25 @@ describe('saveGameState', () => {
     );
   });
 
+  it('storage.setが例外をスローした場合、catchしてスローしない', () => {
+    const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+
+    const storage = createMockStorage();
+
+    // set を例外スロー版に差し替え（try-catchのcatchブロックをカバー）
+    storage.set = () => {
+      throw new Error('Unexpected storage error');
+    };
+
+    const state = createGameState();
+
+    expect(() => saveGameState(storage, state)).not.toThrow();
+    expect(consoleSpy).toHaveBeenCalledWith(
+      expect.stringContaining('GameStateの保存に失敗しました'),
+      expect.anything()
+    );
+  });
+
   it('保存後に読み込み可能である', () => {
     const storage = createMockStorage();
     const state = createGameState({
