@@ -248,3 +248,68 @@ describe('calculateTotalWinFromResults', () => {
     expect(calculateTotalWinFromResults(results)).toBe(3_000);
   });
 });
+
+// ============================================================
+// 追加エッジケース
+// ============================================================
+
+describe('calculateRecoveryRate — 追加エッジケース', () => {
+  it('小数第2位で切り捨て丸め: 1 / 3 * 100 = 33.3%', () => {
+    // 1/3 = 0.33333... → 33.3%
+    expect(calculateRecoveryRate(1, 3)).toBeCloseTo(33.3, 1);
+  });
+
+  it('小数第2位で切り上げ丸め: 2 / 3 * 100 = 66.7%', () => {
+    expect(calculateRecoveryRate(2, 3)).toBeCloseTo(66.7, 1);
+  });
+
+  it('非常に小さな回収率: 1 / 1_000_000 = 0.0001 → 0.0%', () => {
+    expect(calculateRecoveryRate(1, 1_000_000)).toBe(0);
+  });
+});
+
+describe('aggregateDrawResults — 追加エッジケース', () => {
+  it('同一等級が大量にある場合のカウント正確性', () => {
+    const results = Array.from({ length: 100 }, () =>
+      createDrawResult({ prizeLevel: '7等', amount: 300 })
+    );
+    const counts = aggregateDrawResults(results);
+    expect(counts).toEqual({ '7等': 100 });
+  });
+
+  it('ハズレと当選が1つずつの場合', () => {
+    const results = [
+      createDrawResult(), // ハズレ
+      createDrawResult({ prizeLevel: '1等', amount: 700_000_000 }),
+    ];
+    const counts = aggregateDrawResults(results);
+    expect(counts).toEqual({ '1等': 1 });
+  });
+});
+
+describe('mergeWinCounts — 追加エッジケース', () => {
+  it('多数のキーを持つオブジェクト同士のマージ', () => {
+    const existing = { '1等': 1, '2等': 2, '3等': 3, '4等': 4, '5等': 5 };
+    const newCounts = { '5等': 10, '6等': 20, '7等': 30 };
+
+    const merged = mergeWinCounts(existing, newCounts);
+    expect(merged).toEqual({
+      '1等': 1,
+      '2等': 2,
+      '3等': 3,
+      '4等': 4,
+      '5等': 15,
+      '6等': 20,
+      '7等': 30,
+    });
+  });
+});
+
+describe('calculateTotalWinFromResults — 追加エッジケース', () => {
+  it('amount=0の当選（存在しないはずだが安全策）', () => {
+    const results = [
+      createDrawResult({ prizeLevel: 'special', amount: 0 }),
+    ];
+    expect(calculateTotalWinFromResults(results)).toBe(0);
+  });
+});
