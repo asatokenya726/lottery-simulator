@@ -30,7 +30,7 @@ export function ShareButton({ results }: ShareButtonProps) {
     const text = buildShareText(displayName, totalWin, siteUrl);
     const url = buildShareUrl(text);
 
-    window.open(url, '_blank', 'noopener');
+    window.open(url, '_blank', 'noopener,noreferrer');
   }, [results]);
 
   if (results.length === 0) {
@@ -41,7 +41,7 @@ export function ShareButton({ results }: ShareButtonProps) {
     <button
       type="button"
       onClick={handleShare}
-      aria-label="X(Twitter)で結果をシェア"
+      aria-label="X(Twitter)で結果をシェア（新しいタブで開きます）"
       className="mt-3 flex w-full items-center justify-center gap-2 rounded-md bg-bg-tertiary px-4 py-3 text-sm font-semibold text-text-primary transition-colors hover:bg-bg-tertiary/80 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-text-primary cursor-pointer"
     >
       <XIcon />
