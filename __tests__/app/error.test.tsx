@@ -1,17 +1,17 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import ErrorPage from '@/app/error';
+import { createStorage } from '@/data/storage';
 
 /** createStorage のモック */
 vi.mock('@/data/storage', () => ({
-  createStorage: vi.fn(() => ({
-    clear: vi.fn(),
-  })),
+  createStorage: vi.fn(),
 }));
 
 /** window.location.reload のモック */
 const reloadMock = vi.fn();
+const mockClear = vi.fn();
 
 describe('ErrorPage', () => {
   const defaultProps = {
@@ -21,11 +21,19 @@ describe('ErrorPage', () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
-    // window.location.reload をモック
-    Object.defineProperty(window, 'location', {
-      value: { ...window.location, reload: reloadMock },
-      writable: true,
+    /** モックを統一管理し、テスト間の状態汚染を防止 */
+    vi.mocked(createStorage).mockReturnValue({
+      get: vi.fn(),
+      set: vi.fn(),
+      remove: vi.fn(),
+      clear: mockClear,
+      isAvailable: true,
     });
+    vi.stubGlobal('location', { ...window.location, reload: reloadMock });
+  });
+
+  afterEach(() => {
+    vi.unstubAllGlobals();
   });
 
   // ===========================================
@@ -87,17 +95,18 @@ describe('ErrorPage', () => {
       expect(reloadMock).toHaveBeenCalledTimes(1);
     });
 
-    it('「データをリセットして再開」クリックで storage.clear → reload が呼ばれる', async () => {
-      const { createStorage } = await import('@/data/storage');
-      const mockClear = vi.fn();
-      vi.mocked(createStorage).mockReturnValue({
-        get: vi.fn(),
-        set: vi.fn(),
-        remove: vi.fn(),
-        clear: mockClear,
-        isAvailable: true,
-      });
+    it('「ページを再読み込み」クリックで reset は呼ばれない', async () => {
+      const resetMock = vi.fn();
+      render(<ErrorPage error={new Error('test')} reset={resetMock} />);
 
+      await userEvent.click(
+        screen.getByRole('button', { name: 'ページを再読み込み' })
+      );
+
+      expect(resetMock).not.toHaveBeenCalled();
+    });
+
+    it('「データをリセットして再開」クリックで storage.clear → reload が呼ばれる', async () => {
       render(<ErrorPage {...defaultProps} />);
 
       await userEvent.click(
@@ -106,6 +115,17 @@ describe('ErrorPage', () => {
 
       expect(mockClear).toHaveBeenCalledTimes(1);
       expect(reloadMock).toHaveBeenCalledTimes(1);
+    });
+
+    it('「データをリセットして再開」クリックで reset は呼ばれない', async () => {
+      const resetMock = vi.fn();
+      render(<ErrorPage error={new Error('test')} reset={resetMock} />);
+
+      await userEvent.click(
+        screen.getByRole('button', { name: 'データをリセットして再開' })
+      );
+
+      expect(resetMock).not.toHaveBeenCalled();
     });
   });
 

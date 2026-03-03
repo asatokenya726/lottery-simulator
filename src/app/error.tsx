@@ -57,7 +57,7 @@ export default function ErrorPage({ error }: ErrorProps) {
             ページを再読み込み
           </button>
 
-          <p className="text-text-muted text-xs">
+          <p className="text-text-secondary text-xs">
             問題が解決しない場合は、データリセットをお試しください
           </p>
 
