@@ -18,6 +18,7 @@ import { DisclaimerBanner } from "@/components/DisclaimerBanner";
 import { FirstVisitModal } from "@/components/FirstVisitModal";
 import { ResetButton } from "@/components/ResetButton";
 import { ShareButton } from "@/components/ShareButton";
+import { HistoryPanel } from "@/components/HistoryPanel";
 
 export default function Home() {
   const {
@@ -29,7 +30,7 @@ export default function Home() {
     dismissFirstVisit,
   } = useGameState();
 
-  const { addDraw, clearHistory } = useDrawHistory();
+  const { drawHistory, addDraw, clearHistory } = useDrawHistory();
 
   // ローカルUI状態
   const [isDrawing, setIsDrawing] = useState(false);
@@ -145,6 +146,9 @@ export default function Home() {
             totalTickets={gameState.totalTickets}
             winCountByLevel={gameState.winCountByLevel}
           />
+
+          {/* 当選履歴パネル */}
+          <HistoryPanel history={drawHistory} />
 
           {/* リセットボタン */}
           <ResetButton onReset={handleReset} />
