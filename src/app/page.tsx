@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useCallback } from "react";
 import type { DrawHistory } from "@/types";
 import { useGameState } from "@/hooks/useGameState";
 import { useDrawHistory } from "@/hooks/useDrawHistory";
@@ -31,14 +31,11 @@ export default function Home() {
   const { latestDraw, addDraw, clearHistory } = useDrawHistory();
 
   const [isDrawing, setIsDrawing] = useState(false);
-  const [showRefillNotice, setShowRefillNotice] = useState(false);
 
-  // 初回マウント時に資金補給チェック
-  useEffect(() => {
-    if (checkAndRefill()) {
-      setShowRefillNotice(true);
-    }
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  // 初回マウント時に資金補給チェック（遅延初期化で1回だけ実行）
+  const [showRefillNotice, setShowRefillNotice] = useState(
+    () => checkAndRefill()
+  );
 
   /** 10連ガチャ実行 */
   const handleDraw = useCallback(() => {
