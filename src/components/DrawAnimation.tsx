@@ -79,7 +79,7 @@ export function DrawAnimation({ results, onComplete }: DrawAnimationProps) {
   return (
     <div>
       <ul
-        className="grid grid-cols-2 gap-2 list-none p-0 m-0"
+        className="grid grid-cols-2 gap-2 sm:gap-3 list-none p-0 m-0"
         aria-label="抽選結果アニメーション"
       >
         {results.map((result, index) => {

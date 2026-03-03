@@ -9,7 +9,7 @@ import Link from 'next/link';
 export function DisclaimerBanner() {
   return (
     <footer
-      className="bg-bg-secondary border-t border-bg-tertiary px-4 py-3 text-center"
+      className="bg-bg-secondary border-t border-bg-tertiary px-4 lg:px-8 py-3 text-center"
       role="contentinfo"
     >
       <p className="text-warning text-sm font-semibold">
