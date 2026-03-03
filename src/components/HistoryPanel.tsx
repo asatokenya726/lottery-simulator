@@ -66,36 +66,38 @@ export function HistoryPanel({ history }: HistoryPanelProps) {
       className="w-full bg-bg-secondary rounded-lg shadow-md"
       aria-label="当選履歴"
     >
-      {/* ヘッダー（折りたたみトグル） */}
-      <button
-        type="button"
-        className="flex w-full items-center justify-between p-4 text-left"
-        onClick={handleToggle}
-        aria-expanded={isOpen}
-        aria-controls="history-panel-content"
-      >
-        <h2 className="text-lg font-semibold text-text-primary">
-          当選履歴
-          <span className="ml-2 text-sm font-normal text-text-muted">
-            ({history.length})
+      {/* ヘッダー（折りたたみトグル） — h2がbuttonを内包する構造 */}
+      <h2 className="m-0">
+        <button
+          type="button"
+          className="flex w-full items-center justify-between p-4 text-left"
+          onClick={handleToggle}
+          aria-expanded={isOpen}
+          aria-controls="history-panel-content"
+        >
+          <span className="text-lg font-semibold text-text-primary">
+            当選履歴
+            <span className="ml-2 text-sm font-normal text-text-muted">
+              ({history.length})
+            </span>
           </span>
-        </h2>
-        <span
-          className={`text-text-secondary transition-transform duration-200 ${
-            isOpen ? "rotate-180" : ""
-          }`}
-          aria-hidden="true"
-        >
-          ▼
-        </span>
-      </button>
+          <span
+            className={`text-text-secondary transition-transform duration-200 ${
+              isOpen ? "rotate-180" : ""
+            }`}
+            aria-hidden="true"
+          >
+            ▼
+          </span>
+        </button>
+      </h2>
 
-      {/* コンテンツ */}
-      {isOpen && (
-        <div
-          id="history-panel-content"
-          className="max-h-80 overflow-y-auto px-4 pb-4"
-        >
+      {/* コンテンツ — hidden属性で表示制御（aria-controlsの参照先を常にDOMに保持） */}
+      <div
+        id="history-panel-content"
+        className="max-h-80 overflow-y-auto px-4 pb-4"
+        hidden={!isOpen}
+      >
           {reversedHistory.length === 0 ? (
             <p className="text-center text-sm text-text-muted py-4">
               まだ抽選履歴がありません
@@ -143,7 +145,6 @@ export function HistoryPanel({ history }: HistoryPanelProps) {
             </ul>
           )}
         </div>
-      )}
     </section>
   );
 }

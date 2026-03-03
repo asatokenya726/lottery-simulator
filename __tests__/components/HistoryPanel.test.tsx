@@ -39,8 +39,10 @@ describe("HistoryPanel", () => {
 
       await user.click(screen.getByRole("button", { name: /当選履歴/ }));
 
-      // ローカルタイムゾーンにより変換されるが、年月日は含まれることを確認
-      expect(screen.getByText(/2026\/01/)).toBeInTheDocument();
+      // タイムゾーン依存を避けるため、期待値をランタイムで計算
+      const date = new Date("2026-01-15T14:30:00.000Z");
+      const expected = `${date.getFullYear()}/${String(date.getMonth() + 1).padStart(2, "0")}/${String(date.getDate()).padStart(2, "0")} ${String(date.getHours()).padStart(2, "0")}:${String(date.getMinutes()).padStart(2, "0")}`;
+      expect(screen.getByText(expected)).toBeInTheDocument();
     });
 
     it("購入額がカンマ区切りで表示される", async () => {
@@ -125,13 +127,13 @@ describe("HistoryPanel", () => {
   describe("折りたたみ開閉動作", () => {
     const history = [createDrawHistory({ id: "toggle-test" })];
 
-    it("デフォルトで閉じている（コンテンツが非表示）", () => {
+    it("デフォルトで閉じている（コンテンツがhidden）", () => {
       render(<HistoryPanel history={history} />);
 
-      // コンテンツ部分が表示されていない
-      expect(
-        screen.queryByText(/購入:/)
-      ).not.toBeInTheDocument();
+      // コンテンツ部分がhidden属性で非表示
+      const content = document.getElementById("history-panel-content");
+      expect(content).not.toBeNull();
+      expect(content).toHaveAttribute("hidden");
     });
 
     it("クリックで開閉できる", async () => {
@@ -139,14 +141,15 @@ describe("HistoryPanel", () => {
       render(<HistoryPanel history={history} />);
 
       const toggleButton = screen.getByRole("button", { name: /当選履歴/ });
+      const content = document.getElementById("history-panel-content");
 
       // 開く
       await user.click(toggleButton);
-      expect(screen.getByText(/購入:/)).toBeInTheDocument();
+      expect(content).not.toHaveAttribute("hidden");
 
       // 閉じる
       await user.click(toggleButton);
-      expect(screen.queryByText(/購入:/)).not.toBeInTheDocument();
+      expect(content).toHaveAttribute("hidden");
     });
 
     it("aria-expandedが開閉状態を反映する", async () => {
