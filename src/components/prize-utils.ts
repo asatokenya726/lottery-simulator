@@ -48,15 +48,15 @@ export function getPrizeBgClass(prizeLevel: string | null): string {
  * 3等〜7等: スケールのみ（フラッシュなし）
  */
 const PRIZE_ANIMATION_CLASS: Record<string, string> = {
-  '1st': 'animate-flash-jackpot scale-110',
-  '1st-adj': 'animate-flash-high scale-107',
-  '1st-group': 'animate-flash-high scale-107',
-  '2nd': 'animate-flash-high scale-107',
-  '3rd': 'scale-105',
-  '4th': 'scale-105',
-  '5th': 'scale-105',
-  '6th': 'scale-105',
-  '7th': 'scale-105',
+  '1st': 'animate-flash-jackpot scale-110 motion-reduce:animate-none motion-reduce:scale-100',
+  '1st-adj': 'animate-flash-high scale-107 motion-reduce:animate-none motion-reduce:scale-100',
+  '1st-group': 'animate-flash-high scale-107 motion-reduce:animate-none motion-reduce:scale-100',
+  '2nd': 'animate-flash-high scale-107 motion-reduce:animate-none motion-reduce:scale-100',
+  '3rd': 'scale-105 motion-reduce:scale-100',
+  '4th': 'scale-105 motion-reduce:scale-100',
+  '5th': 'scale-105 motion-reduce:scale-100',
+  '6th': 'scale-105 motion-reduce:scale-100',
+  '7th': 'scale-105 motion-reduce:scale-100',
 };
 
 /**

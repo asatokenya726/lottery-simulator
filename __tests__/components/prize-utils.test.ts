@@ -3,33 +3,42 @@ import { getPrizeAnimationClass } from '@/components/prize-utils';
 
 describe('getPrizeAnimationClass', () => {
   it('1等で最も派手なフラッシュ + 大スケールが返る', () => {
-    expect(getPrizeAnimationClass('1st')).toBe(
-      'animate-flash-jackpot scale-110'
-    );
+    const result = getPrizeAnimationClass('1st');
+    expect(result).toContain('animate-flash-jackpot');
+    expect(result).toContain('scale-110');
+    expect(result).toContain('motion-reduce:animate-none');
+    expect(result).toContain('motion-reduce:scale-100');
   });
 
   it('1等前後賞で控えめフラッシュ + 中スケールが返る', () => {
-    expect(getPrizeAnimationClass('1st-adj')).toBe(
-      'animate-flash-high scale-107'
-    );
+    const result = getPrizeAnimationClass('1st-adj');
+    expect(result).toContain('animate-flash-high');
+    expect(result).toContain('scale-107');
+    expect(result).toContain('motion-reduce:animate-none');
+    expect(result).toContain('motion-reduce:scale-100');
   });
 
   it('1等組違いで控えめフラッシュ + 中スケールが返る', () => {
-    expect(getPrizeAnimationClass('1st-group')).toBe(
-      'animate-flash-high scale-107'
-    );
+    const result = getPrizeAnimationClass('1st-group');
+    expect(result).toContain('animate-flash-high');
+    expect(result).toContain('scale-107');
+    expect(result).toContain('motion-reduce:scale-100');
   });
 
   it('2等で控えめフラッシュ + 中スケールが返る', () => {
-    expect(getPrizeAnimationClass('2nd')).toBe(
-      'animate-flash-high scale-107'
-    );
+    const result = getPrizeAnimationClass('2nd');
+    expect(result).toContain('animate-flash-high');
+    expect(result).toContain('scale-107');
+    expect(result).toContain('motion-reduce:scale-100');
   });
 
   it.each(['3rd', '4th', '5th', '6th', '7th'])(
     '%s でスケールのみ（フラッシュなし）が返る',
     (level) => {
-      expect(getPrizeAnimationClass(level)).toBe('scale-105');
+      const result = getPrizeAnimationClass(level);
+      expect(result).toContain('scale-105');
+      expect(result).toContain('motion-reduce:scale-100');
+      expect(result).not.toContain('animate-flash');
     }
   );
 
