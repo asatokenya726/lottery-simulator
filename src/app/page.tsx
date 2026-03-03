@@ -17,6 +17,7 @@ import { RefillNotice } from "@/components/RefillNotice";
 import { DisclaimerBanner } from "@/components/DisclaimerBanner";
 import { FirstVisitModal } from "@/components/FirstVisitModal";
 import { ResetButton } from "@/components/ResetButton";
+import { ShareButton } from "@/components/ShareButton";
 
 export default function Home() {
   const {
@@ -128,7 +129,10 @@ export default function Home() {
                   onComplete={handleAnimationComplete}
                 />
               ) : (
-                <DrawResultList results={currentResults} />
+                <>
+                  <DrawResultList results={currentResults} />
+                  <ShareButton results={currentResults} />
+                </>
               )}
             </section>
           )}
