@@ -52,7 +52,7 @@ describe('DrawAnimation', () => {
     expect(items[2].className).toContain('opacity-0');
   });
 
-  it('当選カードに当選用スタイル（scale-105等）が適用される', () => {
+  it('1等カードにjackpotフラッシュ + scale-110が適用される', () => {
     const results: DrawResult[] = [
       createDrawResult({ prizeLevel: '1st', amount: 700_000_000 }),
     ];
@@ -66,9 +66,46 @@ describe('DrawAnimation', () => {
     });
 
     const item = screen.getByRole('listitem');
-    expect(item.className).toContain('scale-105');
+    expect(item.className).toContain('animate-flash-jackpot');
+    expect(item.className).toContain('scale-110');
     expect(item.className).toContain('duration-300');
     expect(item.className).toContain('opacity-100');
+  });
+
+  it('2等カードにhighフラッシュ + scale-107が適用される', () => {
+    const results: DrawResult[] = [
+      createDrawResult({ prizeLevel: '2nd', amount: 10_000_000 }),
+    ];
+    const onComplete = vi.fn();
+
+    render(<DrawAnimation results={results} onComplete={onComplete} />);
+
+    act(() => {
+      vi.advanceTimersByTime(REVEAL_INTERVAL_MS);
+    });
+
+    const item = screen.getByRole('listitem');
+    expect(item.className).toContain('animate-flash-high');
+    expect(item.className).toContain('scale-107');
+    expect(item.className).toContain('duration-300');
+  });
+
+  it('4等以下のカードにフラッシュクラスが適用されない', () => {
+    const results: DrawResult[] = [
+      createDrawResult({ prizeLevel: '4th', amount: 100_000 }),
+    ];
+    const onComplete = vi.fn();
+
+    render(<DrawAnimation results={results} onComplete={onComplete} />);
+
+    act(() => {
+      vi.advanceTimersByTime(REVEAL_INTERVAL_MS);
+    });
+
+    const item = screen.getByRole('listitem');
+    expect(item.className).toContain('scale-105');
+    expect(item.className).not.toContain('animate-flash-jackpot');
+    expect(item.className).not.toContain('animate-flash-high');
   });
 
   it('ハズレカードにハズレ用スタイル（opacity-100、scaleなし）が適用される', () => {
@@ -88,6 +125,8 @@ describe('DrawAnimation', () => {
     expect(item.className).toContain('opacity-100');
     expect(item.className).toContain('duration-200');
     expect(item.className).not.toContain('scale-105');
+    expect(item.className).not.toContain('animate-flash-jackpot');
+    expect(item.className).not.toContain('animate-flash-high');
   });
 
   it('スキップボタンクリックで全件即時表示される', () => {

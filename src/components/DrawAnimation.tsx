@@ -2,7 +2,11 @@
 
 import { useState, useEffect, useCallback, useRef } from 'react';
 import type { DrawResult } from '@/types';
-import { getPrizeBgClass, getDisplayName } from './prize-utils';
+import {
+  getPrizeBgClass,
+  getDisplayName,
+  getPrizeAnimationClass,
+} from './prize-utils';
 
 /** DrawAnimation の props 型定義 */
 type DrawAnimationProps = {
@@ -87,6 +91,7 @@ export function DrawAnimation({ results, onComplete }: DrawAnimationProps) {
           const bgClass = getPrizeBgClass(result.prizeLevel);
           const displayName = getDisplayName(result.prizeLevel);
           const isWin = result.prizeLevel !== null;
+          const animationClass = getPrizeAnimationClass(result.prizeLevel);
 
           return (
             <li
@@ -95,7 +100,7 @@ export function DrawAnimation({ results, onComplete }: DrawAnimationProps) {
               className={`flex items-center justify-between rounded-lg bg-bg-secondary p-3 ${
                 isVisible
                   ? isWin
-                    ? 'transition-all duration-300 ease-out opacity-100 scale-105'
+                    ? `transition-all duration-300 ease-out opacity-100 ${animationClass}`
                     : 'transition-all duration-200 ease-out opacity-100'
                   : 'opacity-0'
               }`}
