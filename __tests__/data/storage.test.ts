@@ -275,6 +275,122 @@ describe('createStorage', () => {
   // SSR環境（windowなし）
   // ============================================================
 
+  // ============================================================
+  // メモリフォールバック: エラーハンドリング追加テスト
+  // ============================================================
+
+  describe('メモリフォールバック: JSONパース失敗時（lines 55-56）', () => {
+    it('get時にJSON.parseが失敗するとnullを返しconsole.errorを出力する', () => {
+      const consoleSpy = vi
+        .spyOn(console, 'error')
+        .mockImplementation(() => {});
+      vi.spyOn(console, 'warn').mockImplementation(() => {});
+      vi.spyOn(window.localStorage.__proto__, 'setItem').mockImplementation(
+        () => {
+          throw new Error('SecurityError');
+        }
+      );
+
+      const storage = createStorage();
+      // 正常にデータを保存
+      storage.set('key', 'valid');
+
+      // JSON.parseを一時的に失敗させる
+      const originalParse = JSON.parse;
+      vi.spyOn(JSON, 'parse').mockImplementationOnce(() => {
+        throw new SyntaxError('Unexpected token');
+      });
+
+      const result = storage.get('key');
+      expect(result).toBeNull();
+      expect(consoleSpy).toHaveBeenCalledWith(
+        expect.stringContaining('JSONパース失敗'),
+        expect.anything()
+      );
+
+      // JSON.parseを復元
+      JSON.parse = originalParse;
+    });
+  });
+
+  describe('メモリフォールバック: JSON.stringify失敗時（line 65）', () => {
+    it('set時にcircular referenceでもスローしない', () => {
+      const consoleSpy = vi
+        .spyOn(console, 'error')
+        .mockImplementation(() => {});
+      vi.spyOn(console, 'warn').mockImplementation(() => {});
+      vi.spyOn(window.localStorage.__proto__, 'setItem').mockImplementation(
+        () => {
+          throw new Error('SecurityError');
+        }
+      );
+
+      const storage = createStorage();
+      // circular referenceを持つオブジェクトでJSON.stringifyを失敗させる
+      const circular: Record<string, unknown> = {};
+      circular.self = circular;
+
+      expect(() => storage.set('circular', circular)).not.toThrow();
+      expect(consoleSpy).toHaveBeenCalledWith(
+        expect.stringContaining('データ保存失敗'),
+        expect.anything()
+      );
+    });
+  });
+
+  // ============================================================
+  // LocalStorage: remove/clear例外テスト
+  // ============================================================
+
+  describe('LocalStorage: remove例外時（line 121）', () => {
+    it('removeItem例外でもスローしない', () => {
+      const consoleSpy = vi
+        .spyOn(console, 'error')
+        .mockImplementation(() => {});
+      const storage = createStorage();
+
+      // removeItemをモックして例外をスロー
+      vi.spyOn(
+        window.localStorage.__proto__,
+        'removeItem'
+      ).mockImplementation(() => {
+        throw new Error('SecurityError');
+      });
+
+      expect(() => storage.remove('key')).not.toThrow();
+      expect(consoleSpy).toHaveBeenCalledWith(
+        expect.stringContaining('データ削除失敗'),
+        expect.anything()
+      );
+    });
+  });
+
+  describe('LocalStorage: clear例外時（line 139）', () => {
+    it('clear中にlocalStorage操作が例外をスローしてもスローしない', () => {
+      const consoleSpy = vi
+        .spyOn(console, 'error')
+        .mockImplementation(() => {});
+      const storage = createStorage();
+
+      // データを保存してlocalStorageに項目を追加
+      storage.set('key1', 'value1');
+
+      // key()をモックして例外を発生させる
+      vi.spyOn(
+        window.localStorage.__proto__,
+        'key'
+      ).mockImplementation(() => {
+        throw new Error('SecurityError');
+      });
+
+      expect(() => storage.clear()).not.toThrow();
+      expect(consoleSpy).toHaveBeenCalledWith(
+        expect.stringContaining('ストレージクリア失敗'),
+        expect.anything()
+      );
+    });
+  });
+
   describe('SSR環境シミュレーション', () => {
     it('windowが未定義の場合はメモリフォールバックを使用する', () => {
       const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});

@@ -210,6 +210,12 @@ describe('isDrawHistory', () => {
     expect(isDrawHistory(undefined)).toBe(false);
   });
 
+  // --- 配列 ---
+
+  it('配列に対してfalseを返す', () => {
+    expect(isDrawHistory([1, 2, 3])).toBe(false);
+  });
+
   // --- ログ出力しないことの確認 ---
 
   it('isDrawHistoryはconsole.errorを呼ばない', () => {
@@ -431,6 +437,28 @@ describe('addDrawHistory', () => {
     expect(() => addDrawHistory(storage, [], newDraw)).not.toThrow();
     expect(consoleSpy).toHaveBeenCalledWith(
       expect.stringContaining('データ保存失敗'),
+      expect.anything()
+    );
+  });
+
+  it('storage.setが例外をスローした場合、catchして配列を正常に返す', () => {
+    const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+    const storage = createMockStorage();
+
+    // set を例外スロー版に差し替え（try-catchのcatchブロックをカバー）
+    storage.set = () => {
+      throw new Error('Unexpected storage error');
+    };
+
+    const newDraw = createDrawHistory({ id: 'throw-test' });
+
+    const result = addDrawHistory(storage, [], newDraw);
+
+    // 例外を握りつぶして正常に配列を返す
+    expect(result).toHaveLength(1);
+    expect(result[0].id).toBe('throw-test');
+    expect(consoleSpy).toHaveBeenCalledWith(
+      expect.stringContaining('DrawHistoryの保存に失敗しました'),
       expect.anything()
     );
   });
